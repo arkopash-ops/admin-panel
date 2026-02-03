@@ -7,6 +7,8 @@ const Wallets = () => {
   const [wallets, setWallets] = useState<Wallet[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [search, setSearch] = useState("");
+
   useEffect(() => {
     const loadWallets = async () => {
       try {
@@ -31,11 +33,34 @@ const Wallets = () => {
     );
   }
 
+  const filteredWallets = wallets.filter(wallet => {
+    const q = search.toLowerCase();
+
+    return (
+      wallet.user.walletAddress.toLowerCase().includes(q) ||
+      `${wallet.user.firstName} ${wallet.user.lastName}`
+        .toLowerCase()
+        .includes(q)
+    );
+  });
+
   return (
     <div>
       <h4 className="mb-3">
         <i className="bi bi-wallet2"></i> Wallets
       </h4>
+
+      {/* SEARCH BAR */}
+      <div className="row mb-3">
+        <div className="col-md-4">
+          <input
+            className="form-control form-control-dark"
+            placeholder="Search user or wallet address..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+        </div>
+      </div>
 
       <table className="table table-dark table-hover align-middle">
         <thead>
@@ -50,7 +75,15 @@ const Wallets = () => {
         </thead>
 
         <tbody>
-          {wallets.map(wallet => (
+          {filteredWallets.length === 0 && (
+            <tr>
+              <td colSpan={6} className="text-center text-muted py-4">
+                No wallets found
+              </td>
+            </tr>
+          )}
+
+          {filteredWallets.map(wallet => (
             <tr key={wallet.id}>
               <td className="d-flex align-items-center gap-2">
                 <img
