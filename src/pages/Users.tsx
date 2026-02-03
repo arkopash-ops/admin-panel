@@ -1,47 +1,7 @@
-import { useEffect, useState } from "react";
-import type { User } from "../types/user";
-import type { ApiUser } from "../types/ApiUser";
-
-interface dummyUserData {
-  users: ApiUser[];
-}
+import { useUsers } from "../hooks/useUser";
 
 const Users = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const kycStatuses = ["Pending", "Approved", "Rejected"] as const;
-
-    const fetchUsers = async () => {
-      try {
-        const res = await fetch("https://dummyjson.com/users");
-        if (!res.ok) throw new Error("Failed to fetch users");
-        const data: dummyUserData = await res.json();
-
-        const myUsers: User[] = data.users.map(u => ({
-          id: u.id,
-          image: u.image,
-          firstName: u.firstName,
-          lastName: u.lastName,
-          email: u.email,
-          phone: u.phone,
-          walletAddress: `0x${crypto.randomUUID()}`,
-          kycStatus: kycStatuses[u.id % 3],
-          accountStatus: u.id % 2 === 0 ? "Active" : "Blocked",
-        }));
-
-        setUsers(myUsers);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUsers();
-  }, []);
-
+  const { users, loading } = useUsers();
   if (loading) {
     return (
       <div className="d-flex justify-content-center align-items-center py-5">

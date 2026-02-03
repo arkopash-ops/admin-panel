@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
-import type { User } from "../types/user";
 import type { Transaction } from "../types/Transaction";
-import type { ApiUser } from "../types/ApiUser";
+import { fetchUsers } from "../services/userService";
+import { generateTransactions } from "../services/transactionService";
+import type { User } from "../types/user";
 import Card from "../component/Card";
-
-interface DummyUserData {
-  users: ApiUser[];
-}
 
 const Dashboard = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -14,46 +11,13 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const currencies = ["BTC", "ETH", "USDT"] as const;
-    const statuses = ["Pending", "Success", "Failed"] as const;
-    const kycStatuses = ["Pending", "Approved", "Rejected"] as const;
-
-    const fetchDashboardData = async () => {
+    const loadDashboard = async () => {
       try {
-        const res = await fetch("https://dummyjson.com/users");
-        if (!res.ok) throw new Error("Failed to fetch users");
+        const usersData = await fetchUsers();
+        const txData = generateTransactions(usersData).slice(0, 8);
 
-        const data: DummyUserData = await res.json();
-
-        const mappedUsers: User[] = data.users.map((u) => ({
-          id: u.id,
-          image: u.image,
-          firstName: u.firstName,
-          lastName: u.lastName,
-          email: u.email,
-          phone: u.phone,
-          walletAddress: `0x${crypto.randomUUID()}`,
-          kycStatus: kycStatuses[u.id % 3],
-          accountStatus: u.id % 2 === 0 ? "Active" : "Blocked",
-        }));
-
-        const dummyTransactions: Transaction[] = Array.from({ length: 8 }, (_, i) => {
-          const user = mappedUsers[i % mappedUsers.length];
-          return {
-            id: i + 1,
-            txHash: `0x${crypto.randomUUID()}`,
-            fromWallet: user.walletAddress,
-            toWallet: `0x${crypto.randomUUID()}`,
-            amount: parseFloat((Math.random() * 2).toFixed(4)),
-            currency: currencies[i % currencies.length],
-            status: statuses[i % statuses.length],
-            user,
-          };
-        }
-        );
-
-        setUsers(mappedUsers);
-        setTransactions(dummyTransactions);
+        setUsers(usersData);
+        setTransactions(txData);
       } catch (err) {
         console.error(err);
       } finally {
@@ -61,15 +25,13 @@ const Dashboard = () => {
       }
     };
 
-    fetchDashboardData();
+    loadDashboard();
   }, []);
 
   if (loading) {
     return (
       <div className="d-flex justify-content-center align-items-center py-5">
-        <div className="spinner-border text-info" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
+        <div className="spinner-border text-info" />
       </div>
     );
   }
@@ -82,7 +44,7 @@ const Dashboard = () => {
   return (
     <div>
       <h4 className="mb-4">
-        <i className="bi bi-speedometer2"></i> Dashboard
+        <i className="bi bi-window-desktop"></i> Dashboard
       </h4>
 
       {/* STATS */}
@@ -114,7 +76,9 @@ const Dashboard = () => {
                   <td>{tx.user.firstName}</td>
                   <td>
                     {tx.amount}{" "}
-                    <span className="text-muted small">{tx.currency}</span>
+                    <span className="text-muted small">
+                      {tx.currency}
+                    </span>
                   </td>
                   <td>
                     <span

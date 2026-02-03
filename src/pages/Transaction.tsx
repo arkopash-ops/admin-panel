@@ -1,55 +1,18 @@
 import { useEffect, useState } from "react";
 import type { Transaction } from "../types/Transaction";
-import type { User } from "../types/user";
-import type { ApiUser } from "../types/ApiUser";
-
-interface dummyUserData {
-  users: ApiUser[];
-}
+import { generateTransactions } from "../services/transactionService";
+import { fetchUsers } from "../services/userService";
 
 const Transactions = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchTransactions = async () => {
-      const currencies = ["BTC", "ETH", "USDT"] as const;
-      const statuses = ["Pending", "Success", "Failed"] as const;
-
+    const loadTransactions = async () => {
       try {
-        const res = await fetch("https://dummyjson.com/users");
-        if (!res.ok) throw new Error("Failed to fetch users");
-        const data: dummyUserData = await res.json();
-
-        const users: User[] = data.users.map((u) => ({
-          id: u.id,
-          image: u.image,
-          firstName: u.firstName,
-          lastName: u.lastName,
-          email: u.email,
-          phone: u.phone,
-          walletAddress: `0x${crypto.randomUUID()}`,
-          kycStatus: "Approved",
-          accountStatus: "Active",
-        }));
-
-        // dummy transactions
-        const dummyTransactions: Transaction[] = Array.from({ length: 15 }, (_, i) => {
-          const myUser = users[i % users.length];
-          const toUser = users[(i + 1) % users.length];
-          return {
-            id: i + 1,
-            txHash: `0x${crypto.randomUUID()}`,
-            fromWallet: myUser.walletAddress,
-            toWallet: toUser.walletAddress,
-            amount: parseFloat((Math.random() * 2).toFixed(3)),
-            currency: currencies[i % currencies.length],
-            status: statuses[i % statuses.length],
-            user: myUser,
-          };
-        });
-
-        setTransactions(dummyTransactions);
+        const users = await fetchUsers();
+        const txs = generateTransactions(users);
+        setTransactions(txs);
       } catch (err) {
         console.error(err);
       } finally {
@@ -57,7 +20,7 @@ const Transactions = () => {
       }
     };
 
-    fetchTransactions();
+    loadTransactions();
   }, []);
 
   if (loading) {
