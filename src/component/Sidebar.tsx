@@ -6,7 +6,7 @@ const Sidebar = () => {
             <h5 className="text-info fw-bold mb-4">CryptoChain</h5>
 
             <ul className="nav flex-column gap-2">
-                <NavLink to="/" className="nav-link text-light">
+                <NavLink to="/dashboard" className="nav-link text-light">
                     <i className="bi bi-window-desktop"></i> Dashboard
                 </NavLink>
                 <NavLink to="/users" className="nav-link text-light">
@@ -17,6 +17,9 @@ const Sidebar = () => {
                 </NavLink>
                 <NavLink to="/wallets" className="nav-link text-light">
                     <i className="bi bi-wallet2"></i> Wallets
+                </NavLink>
+                <NavLink to="/" className="nav-link text-danger">
+                    <i className="bi bi-power"></i> Logout
                 </NavLink>
             </ul>
         </aside>
