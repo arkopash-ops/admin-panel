@@ -12,9 +12,6 @@ const Sidebar = () => {
                 <NavLink to="/users" className="nav-link text-light">
                     <i className="bi bi-person-fill"></i> Users
                 </NavLink>
-                <NavLink to="/kyc" className="nav-link text-light">
-                    <i className="bi bi-person-fill-check"></i> KYC
-                </NavLink>
                 <NavLink to="/transactions" className="nav-link text-light">
                     <i className="bi bi-currency-bitcoin"></i> Transaction
                 </NavLink>
