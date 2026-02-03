@@ -1,18 +1,10 @@
 import { useEffect, useState } from "react";
 import type { User } from "../types/user";
 import type { ApiUser } from "../types/ApiUser";
+import type { Wallet } from "../types/Wallet";
 
 interface DummyUserData {
   users: ApiUser[];
-}
-
-type Currency = "BTC" | "ETH" | "USDT";
-
-interface Wallet {
-  id: number;
-  user: User;
-  balances: Record<Currency, number>;
-  lastActivity: string;
 }
 
 const Wallets = () => {
