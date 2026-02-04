@@ -1,4 +1,4 @@
-import type { User } from "../types/user";
+import type { User } from "../types/User";
 import type { ApiUser } from "../types/ApiUser";
 import { getWalletAddress } from "../utils/wallet";
 

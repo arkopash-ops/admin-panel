@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
+import type { User } from "../types/User";
 import type { Transaction } from "../types/Transaction";
 import { fetchUsers } from "../services/userService";
 import { generateTransactions } from "../services/transactionService";
-import type { User } from "../types/user";
 import Card from "../component/Card";
 
 const Dashboard = () => {

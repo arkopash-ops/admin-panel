@@ -1,5 +1,5 @@
 import type { Currency } from "./Currency";
-import type { User } from "./user";
+import type { User } from "./User";
 
 export interface Wallet {
     id: number;

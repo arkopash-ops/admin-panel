@@ -1,5 +1,5 @@
 import type { Transaction } from "../types/Transaction";
-import type { User } from "../types/user";
+import type { User } from "../types/User";
 
 const currencies = ["BTC", "ETH", "USDT"] as const;
 const statuses = ["Pending", "Success", "Failed"] as const;

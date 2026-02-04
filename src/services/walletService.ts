@@ -1,5 +1,5 @@
 import type { Wallet } from "../types/Wallet";
-import type { User } from "../types/user";
+import type { User } from "../types/User";
 
 export const generateWallets = (users: User[]): Wallet[] => {
   return users.slice(0, 15).map(user => ({
